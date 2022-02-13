@@ -39,7 +39,13 @@ UWPIconSet = {
             ('Square150x150Logo.scale-100.png', (150, 150)),
             ('Square150x150Logo.scale-200.png', (300, 300)),
             ('Square150x150Logo.scale-400.png', (600, 600)),
+            ('Square310x310Logo.scale-200.png', (620, 620)),
+            ('Square310x310Logo.scale-400.png', (1240, 1240)),
+            ('Square71x71Logo.scale-400.png', (284, 284)),
+            ('LockScreenLogo.scale-200.png', (400, 400)),
+            ('StoreLogo.png', (400, 400)),
             ('Square44x44Logo.altform-unplated_targetsize-16.png', (16, 16)),
+            ('Square44x44Logo.targetsize-24_altform-unplated.png', (24, 24)),
             ('Square44x44Logo.altform-unplated_targetsize-48.png', (48, 48)),
             ('Square44x44Logo.altform-unplated_targetsize-256.png', (256, 256)),
             ('Square44x44Logo.scale-100.png', (44, 44)),
@@ -89,16 +95,34 @@ IOSIconSet = {
     }
 }
 
+WebIconSet = {
+    'OutputFolder':  'Web',
+    'Files': {
+        "Icons": [
+            ('icon-512x512.png', (512)),
+            ('icon-384x384.png', (384)),
+            ('icon-192x192.png', (192)),
+            ('icon-152x152.png', (152)),
+            ('icon-144x144.png', (144)),
+            ('icon-128x128.png', (128)),
+            ('icon-96x96.png', (96)),
+            ('icon-72x72.png', (72)),
+
+        ]
+    }
+}
+
 Platforms = [
     UWPIconSet,
-    IOSIconSet
+    IOSIconSet,
+    WebIconSet
 ]
 
 
 def hex_to_rgba(value):
     value = value.lstrip('#')
     lv = len(value)
-    return tuple(int(value[i:i + lv // 4], 16) for i in range(0, lv, lv // 4))
+    return tuple(int(value[i: i + lv // 4], 16) for i in range(0, lv, lv // 4))
 
 
 class MakeIcons(object):
@@ -135,7 +159,8 @@ class MakeIcons(object):
                 os.mkdir(group_dir)
                 for file in group_files:
                     output_name = os.path.join(group_dir, file[0])
-                    out_width, out_height = file[1]
+                    out_width, out_height = file[1] if isinstance(
+                        file[1], tuple) else (file[1], file[1])
 
                     scale = out_width / width
 
@@ -189,7 +214,7 @@ def main():
                         dest='force',
                         action='store_true')
     parser.add_argument('-c', '--color',
-                        help='Background color',
+                        help='Background color in hex AARRGGBB',
                         dest='background_color',
                         default='#00000000',
                         action='store')
